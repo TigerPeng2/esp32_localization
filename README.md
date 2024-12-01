@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 | Supported Targets | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-S2 | ESP32-S3 |
 | ----------------- | -------- | -------- | -------- | -------- | -------- |
 
@@ -96,3 +97,7 @@ I (393564) ftm_station: Estimated RTT - 33 nSec, Estimated Distance - 5.07 meter
 
 The final statement gives the average calculated RTT along with an estimated distance between the Station and the AP. This distance is measured by first adjusting the RTT with any physical analog delays and a calibration delta. Distances measured using RTT are not perfectly accurate, and are subjected to various errors like RF interference, multi-path, path loss, orientations etc.
 The design requires line-of-sight with straightforward propagation path with no less than -70dBm RSSI for better results.
+=======
+# esp32_localization
+Testing the ability of the ESP 32 S2 FTM measurements to measure distance and subsequently localize using triangulation
+>>>>>>> 68507c845d2e24a369cdef280a2352a104a693f0
