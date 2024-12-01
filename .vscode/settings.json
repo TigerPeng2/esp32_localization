@@ -1,0 +1,15 @@
+{
+  "idf.adapterTargetName": "esp32s2",
+  "idf.espIdfPath": "/Users/tpeng/esp/esp-idf",
+  "idf.pythonBinPath": "/Users/tpeng/esp/esp-idf/tools/python_env/idf5.5_py3.12_env/bin/python",
+  "idf.toolsPath": "/Users/tpeng/esp/esp-idf/tools",
+  "idf.customExtraPaths": "/Users/tpeng/esp/esp-idf/tools/tools/xtensa-esp-elf-gdb/14.2_20240403/xtensa-esp-elf-gdb/bin:/Users/tpeng/esp/esp-idf/tools/tools/riscv32-esp-elf-gdb/14.2_20240403/riscv32-esp-elf-gdb/bin:/Users/tpeng/esp/esp-idf/tools/tools/xtensa-esp-elf/esp-14.2.0_20240906/xtensa-esp-elf/bin:/Users/tpeng/esp/esp-idf/tools/tools/riscv32-esp-elf/esp-14.2.0_20240906/riscv32-esp-elf/bin:/Users/tpeng/esp/esp-idf/tools/tools/esp32ulp-elf/2.38_20240113/esp32ulp-elf/bin:/Users/tpeng/esp/esp-idf/tools/tools/cmake/3.30.2/CMake.app/Contents/bin:/Users/tpeng/esp/esp-idf/tools/tools/openocd-esp32/v0.12.0-esp32-20241016/openocd-esp32/bin:/Users/tpeng/esp/esp-idf/tools/tools/ninja/1.12.1:/Users/tpeng/esp/esp-idf/tools/tools/esp-rom-elfs/20241011",
+  "idf.customExtraVars": {
+    "OPENOCD_SCRIPTS": "/Users/tpeng/esp/esp-idf/tools/tools/openocd-esp32/v0.12.0-esp32-20241016/openocd-esp32/share/openocd/scripts",
+    "ESP_ROM_ELF_DIR": "/Users/tpeng/esp/esp-idf/tools/tools/esp-rom-elfs/20241011/"
+  },
+  "idf.gitPath": "git",
+  "files.associations": {
+    "nvs_flash.h": "c"
+  }
+}
