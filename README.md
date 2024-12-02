@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 | Supported Targets | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-S2 | ESP32-S3 |
 | ----------------- | -------- | -------- | -------- | -------- | -------- |
 
@@ -7,9 +6,10 @@
 (See the README.md file in the upper level 'examples' directory for more information about examples.)
 
 ## Introduction
+
 One of the ways in which WiFi enabled devices can measure their distance to the Access Point is by measuring Wi-Fi Round Trip Time (Wi-Fi RTT). Wi-Fi RTT is the time a WiFi signal takes to travel from Station to an AP. This time is proportional to the actual distance between them. Given the RTT, the distance can be calculated with below simple formula -
 
-> distance = RTT * c / 2
+> distance = RTT \* c / 2
 > (Where c is the speed of light)
 
 Wi-Fi RTT is calculated using a procedure called Fine Timing Measurement(FTM). During FTM procedure, a burst of Action frames is transmitted by one device(FTM Responder) to another(FTM Initiator) and each of them is ACK'ed. Hardware in both the devices mark time-of-arrival (TOA) and time-of-departure (TOD) of both Action frame and its ACK. In the end, the FTM Initiator collects the data for all pairs of Action frame and ACK and calculates RTT for each pair with below formula -
@@ -68,17 +68,20 @@ ftm>
 Issue `ftm -I` to initiate a session with default configuration of 32 FTM frames. For more configurations below options are available -
 `ftm  [-I] [-c <0/8/16/24/32/64>] [-p <2-255 (x 100 mSec)>] [-s SSID]`
 Where -
-* `-I` OR `--ftm_initiator`:  FTM Initiator mode
-* `-c` OR `--frm_count`: FTM frames to be exchanged (Valid values: 0=No preference, 8, 16, 24, 32, 64, default: 32)
-* `-p` OR `--burst_period`: Periodicity of FTM bursts in 100's of milliseconds (0: No preference, default: 2)
-* `-s` OR `--ssid=SSID`: SSID of AP that supports FTM Responder mode
+
+- `-I` OR `--ftm_initiator`: FTM Initiator mode
+- `-c` OR `--frm_count`: FTM frames to be exchanged (Valid values: 0=No preference, 8, 16, 24, 32, 64, default: 32)
+- `-p` OR `--burst_period`: Periodicity of FTM bursts in 100's of milliseconds (0: No preference, default: 2)
+- `-s` OR `--ssid=SSID`: SSID of AP that supports FTM Responder mode
 
 Currently FTM is only supported in below configuration -
+
 1. Station as Initiator and SoftAP as Responder on supported ESP devices
 2. Station as Initiator and an external AP that supports FTM in Responder mode
-The first option should be preferred since ESP devices are self calibrated for high resolution measurement.
+   The first option should be preferred since ESP devices are self calibrated for high resolution measurement.
 
 ## Example Output
+
 Example output of an FTM Procedure -
 
 ```bash
@@ -97,7 +100,3 @@ I (393564) ftm_station: Estimated RTT - 33 nSec, Estimated Distance - 5.07 meter
 
 The final statement gives the average calculated RTT along with an estimated distance between the Station and the AP. This distance is measured by first adjusting the RTT with any physical analog delays and a calibration delta. Distances measured using RTT are not perfectly accurate, and are subjected to various errors like RF interference, multi-path, path loss, orientations etc.
 The design requires line-of-sight with straightforward propagation path with no less than -70dBm RSSI for better results.
-=======
-# esp32_localization
-Testing the ability of the ESP 32 S2 FTM measurements to measure distance and subsequently localize using triangulation
->>>>>>> 68507c845d2e24a369cdef280a2352a104a693f0

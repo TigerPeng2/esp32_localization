@@ -89,7 +89,7 @@ static EventGroupHandle_t s_ftm_event_group;
 static const int FTM_REPORT_BIT = BIT0;
 static const int FTM_FAILURE_BIT = BIT1;
 static uint8_t s_ftm_report_num_entries;
-static uint32_t s_rtt_est, s_dist_est;
+static uint64_t s_rtt_est, s_dist_est;
 static bool s_ap_started;
 static uint8_t s_ap_channel;
 static uint8_t s_ap_bssid[ETH_ALEN];
@@ -138,13 +138,30 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         wifi_event_ftm_report_t *event = (wifi_event_ftm_report_t *) event_data;
 
         s_rtt_est = 0;
-        s_dist_est = 0;
+
         // This is the part where I basically redo the entire RTT calculation, because I think the decimal precise calculation
         // is trapped in the precompiled libraries and I can't edit what it sends back to me.
-        
-        for (int i = 0; i < event->ftm_report_num_entries; i++) {
-            
+        wifi_ftm_report_entry_t *ftm_report = NULL;
+        ftm_report = malloc(sizeof(wifi_ftm_report_entry_t) * event->ftm_report_num_entries);
+        if (!ftm_report) {
+            ESP_LOGE(TAG_STA, "Failed to alloc buffer for FTM report");
+            goto exit;
         }
+        bzero(ftm_report, sizeof(wifi_ftm_report_entry_t) * event->ftm_report_num_entries);
+        if (ESP_OK != esp_wifi_ftm_get_report(ftm_report, event->ftm_report_num_entries)) {
+            ESP_LOGE(TAG_STA, "Could not get FTM report");
+            goto exit;
+        }
+
+        for (int i = 0; i < event->ftm_report_num_entries; i++) {
+            s_rtt_est += (uint64_t)ftm_report[i].rtt * 1000000; // convert to femtoseconds
+        }
+
+        s_rtt_est /= event->ftm_report_num_entries;
+
+        // 18,446,744,073,709,551,615 femtoseconds is the maximum value for RTT, 20 digits, 18.446744073709551615 seconds
+        s_dist_est = s_rtt_est / 2 * 299702547; // now in 10^13 greater than actual distance
+
         s_ftm_report_num_entries = event->ftm_report_num_entries;
         if (event->status == FTM_STATUS_SUCCESS) {
             xEventGroupSetBits(s_ftm_event_group, FTM_REPORT_BIT);
@@ -155,6 +172,10 @@ static void event_handler(void *arg, esp_event_base_t event_base,
             ESP_LOGI(TAG_STA, "FTM procedure with Peer("MACSTR") failed! (Status - %d)",
                      MAC2STR(event->peer_mac), event->status);
             xEventGroupSetBits(s_ftm_event_group, FTM_FAILURE_BIT);
+        }
+    exit:
+        if (ftm_report) {
+            free(ftm_report);
         }
     } else if (event_id == WIFI_EVENT_AP_START) {
         s_ap_started = true;
@@ -616,8 +637,8 @@ static int wifi_cmd_ftm(int argc, char **argv)
             ftm_print_report();
             // ESP_LOGI(TAG_STA, "Estimated RTT - %" PRId32 " nSec, Estimated Distance - %" PRId32 ".%02" PRId32 " meters",
             //                   s_rtt_est, s_dist_est / 100, s_dist_est % 100);
-            ESP_LOGI(TAG_STA, "%" PRId32 " meters",
-                            s_rtt_est);
+            ESP_LOGI(TAG_STA, "%" PRIu64 " femtoseconds, %" PRIu64 ".%04" PRIu64 " cm",
+                            s_rtt_est, s_dist_est / 10000000000000000, (s_dist_est % 10000000000000000) / 1000000000000);
         } else if (bits & FTM_FAILURE_BIT) {
             /* FTM Failure case */
             ESP_LOGE(TAG_STA, "FTM procedure failed!");
