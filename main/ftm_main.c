@@ -22,6 +22,16 @@
 #include "esp_wifi.h"
 #include "esp_console.h"
 #include "esp_mac.h"
+#include "driver/gpio.h"
+#include "driver/ledc.h"
+
+#define LEDC_TIMER              LEDC_TIMER_0
+#define LEDC_MODE               LEDC_LOW_SPEED_MODE
+#define LEDC_OUTPUT_IO          (3) // Define the output GPIO
+#define LEDC_CHANNEL            LEDC_CHANNEL_0
+#define LEDC_DUTY_RES           LEDC_TIMER_13_BIT // Set duty resolution to 13 bits
+#define LEDC_DUTY               (7168) // Set duty to 50%. (2 ** 13) * 50% = 4096
+#define LEDC_FREQUENCY          (4000) // Frequency in Hertz. Set frequency at 4 kHz
 
 typedef struct {
     struct arg_str *ssid;
@@ -59,7 +69,7 @@ typedef struct {
 } wifi_ftm_args_t;
 
 static wifi_sta_args_t sta_args;
-static wifi_ap_args_t ap_args;
+// static wifi_ap_args_t ap_args;
 static wifi_scan_arg_t scan_args;
 static wifi_ftm_args_t ftm_args;
 
@@ -469,29 +479,29 @@ static bool wifi_cmd_ap_set(const char* ssid, const char* pass, uint8_t channel,
         esp_wifi_set_bandwidth(ESP_IF_WIFI_AP, WIFI_BW_HT20);
     }
     ESP_LOGI(TAG_AP, "Starting SoftAP with FTM Responder support, SSID - %s, Password - %s, Primary Channel - %d, Bandwidth - %dMHz",
-                        ap_args.ssid->sval[0], ap_args.password->sval[0], channel, bw);
+                        ssid, pass, channel, bw);
 
     return true;
 }
 
-static int wifi_cmd_ap(int argc, char** argv)
-{
-    int nerrors = arg_parse(argc, argv, (void**) &ap_args);
+// static int wifi_cmd_ap(int argc, char** argv)
+// {
+//     int nerrors = arg_parse(argc, argv, (void**) &ap_args);
 
-    if (nerrors != 0) {
-        arg_print_errors(stderr, ap_args.end, argv[0]);
-        return 1;
-    }
+//     if (nerrors != 0) {
+//         arg_print_errors(stderr, ap_args.end, argv[0]);
+//         return 1;
+//     }
 
-    if (!wifi_cmd_ap_set(ap_args.ssid->sval[0], ap_args.password->sval[0],
-                                ap_args.channel->count != 0 ? ap_args.channel->ival[0] : DEFAULT_AP_CHANNEL,
-                                ap_args.bandwidth->count != 0 ? ap_args.bandwidth->ival[0] : DEFAULT_AP_BANDWIDTH)) {
-        ESP_LOGE(TAG_AP, "Failed to start SoftAP!");
-        return 1;
-    }
+//     if (!wifi_cmd_ap_set(ap_args.ssid->sval[0], ap_args.password->sval[0],
+//                                 ap_args.channel->count != 0 ? ap_args.channel->ival[0] : DEFAULT_AP_CHANNEL,
+//                                 ap_args.bandwidth->count != 0 ? ap_args.bandwidth->ival[0] : DEFAULT_AP_BANDWIDTH)) {
+//         ESP_LOGE(TAG_AP, "Failed to start SoftAP!");
+//         return 1;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 static int wifi_cmd_query(int argc, char **argv)
 {
@@ -700,21 +710,21 @@ void register_wifi(void)
 
     ESP_ERROR_CHECK( esp_console_cmd_register(&sta_cmd) );
 
-    ap_args.ssid = arg_str0(NULL, NULL, "<ssid>", "SSID of AP");
-    ap_args.password = arg_str0(NULL, NULL, "<pass>", "password of AP");
-    ap_args.channel = arg_int0("c", "channel", "<1-11>", "Primary channel of AP");
-    ap_args.bandwidth = arg_int0("b", "bandwidth", "<20/40>", "Channel bandwidth");
-    ap_args.end = arg_end(2);
+    // ap_args.ssid = arg_str0(NULL, NULL, "<ssid>", "SSID of AP");
+    // ap_args.password = arg_str0(NULL, NULL, "<pass>", "password of AP");
+    // ap_args.channel = arg_int0("c", "channel", "<1-11>", "Primary channel of AP");
+    // ap_args.bandwidth = arg_int0("b", "bandwidth", "<20/40>", "Channel bandwidth");
+    // ap_args.end = arg_end(2);
 
-    const esp_console_cmd_t ap_cmd = {
-        .command = "ap",
-        .help = "AP mode, configure ssid and password",
-        .hint = NULL,
-        .func = &wifi_cmd_ap,
-        .argtable = &ap_args
-    };
+    // const esp_console_cmd_t ap_cmd = {
+    //     .command = "ap",
+    //     .help = "AP mode, configure ssid and password",
+    //     .hint = NULL,
+    //     .func = &wifi_cmd_ap,
+    //     .argtable = &ap_args
+    // };
 
-    ESP_ERROR_CHECK( esp_console_cmd_register(&ap_cmd) );
+    // ESP_ERROR_CHECK( esp_console_cmd_register(&ap_cmd) );
 
     scan_args.ssid = arg_str0(NULL, NULL, "<ssid>", "SSID of AP want to be scanned");
     scan_args.end = arg_end(1);
@@ -761,8 +771,70 @@ void register_wifi(void)
     ESP_ERROR_CHECK( esp_console_cmd_register(&ftm_cmd) );
 }
 
+static void example_ledc_init(void)
+{
+    // Prepare and then apply the LEDC PWM timer configuration
+    ledc_timer_config_t ledc_timer = {
+        .speed_mode       = LEDC_MODE,
+        .timer_num        = LEDC_TIMER,
+        .duty_resolution  = LEDC_DUTY_RES,
+        .freq_hz          = LEDC_FREQUENCY,  // Set output frequency at 4 kHz
+        .clk_cfg          = LEDC_AUTO_CLK
+    };
+    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
+
+    // Prepare and then apply the LEDC PWM channel configuration
+    ledc_channel_config_t ledc_channel = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = LEDC_OUTPUT_IO,
+        .duty           = 0, // Set duty to 0%
+        .hpoint         = 0
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
+
+    ledc_channel_config_t ledc_channel2 = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL_1,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = 5,
+        .duty           = 0, // Set duty to 0%
+        .hpoint         = 0
+    };
+
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel2));
+
+    ledc_channel_config_t ledc_channel3 = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL_2,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = 7,
+        .duty           = 0, // Set duty to 0%
+        .hpoint         = 0
+    };
+
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel3));
+}
+
 void app_main(void)
 {
+    example_ledc_init();
+    // Set duty to 50%
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0));
+    // Update duty to apply the new value
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
+    // Update duty to apply the new value
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1));
+
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, LEDC_DUTY));
+    // Update duty to apply the new value
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
+
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -794,13 +866,15 @@ void app_main(void)
 
 #if CONFIG_ESP_FTM_LOC_AP_ENABLE
     // Enable AP mode
+    char* ssid = NULL;
     if (CONFIG_ESP_FTM_LOC_AP_SSID == 0) {
-        ESP_LOGI(TAG_AP, "Elliot's AP");
+        ssid = "red";
     } else if (CONFIG_ESP_FTM_LOC_AP_SSID == 1) {
-        ESP_LOGI(TAG_AP, "Max's AP");
+        ssid = "green";
     } else if (CONFIG_ESP_FTM_LOC_AP_SSID == 2) {
-        ESP_LOGI(TAG_AP, "Shivam's AP");
+        ssid = "blue";
     }
+    wifi_cmd_ap_set(ssid, "", DEFAULT_AP_CHANNEL, DEFAULT_AP_BANDWIDTH);
 #else
     // Enable station mode
     ESP_LOGI(TAG_AP, "No AP mode");

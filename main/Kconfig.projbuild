@@ -33,10 +33,10 @@ menu "Example Configuration"
 
     config ESP_FTM_LOC_AP_SSID
         depends on ESP_FTM_LOC_AP_ENABLE
-        int "AP SSID: Elliot, Max, Shivam"
+        int "AP SSID: red, green, blue"
         default 0
         help
-            0: elliot-ftm
-            1: max-ftm
-            2: shivam-ftm
+            0: red
+            1: green
+            2: blue
 endmenu
