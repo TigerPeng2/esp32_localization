@@ -154,7 +154,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         }
 
         for (int i = 0; i < event->ftm_report_num_entries; i++) {
-            s_rtt_est += (uint64_t)ftm_report[i].rtt * 1000000; // convert to femtoseconds
+            s_rtt_est += (uint64_t)ftm_report[i].rtt * 1000; // convert to femtoseconds
         }
 
         s_rtt_est /= event->ftm_report_num_entries;
@@ -638,7 +638,7 @@ static int wifi_cmd_ftm(int argc, char **argv)
             // ESP_LOGI(TAG_STA, "Estimated RTT - %" PRId32 " nSec, Estimated Distance - %" PRId32 ".%02" PRId32 " meters",
             //                   s_rtt_est, s_dist_est / 100, s_dist_est % 100);
             ESP_LOGI(TAG_STA, "%" PRIu64 " femtoseconds, %" PRIu64 ".%04" PRIu64 " cm",
-                            s_rtt_est, s_dist_est / 10000000000000000, (s_dist_est % 10000000000000000) / 1000000000000);
+                            s_rtt_est, s_dist_est / 10000000000000, (s_dist_est % 10000000000000) / 1000000000);
         } else if (bits & FTM_FAILURE_BIT) {
             /* FTM Failure case */
             ESP_LOGE(TAG_STA, "FTM procedure failed!");
@@ -790,6 +790,20 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_console_new_repl_usb_serial_jtag(&hw_config, &repl_config, &repl));
 #else
 #error Unsupported console type
+#endif
+
+#if CONFIG_ESP_FTM_LOC_AP_ENABLE
+    // Enable AP mode
+    if (CONFIG_ESP_FTM_LOC_AP_SSID == 0) {
+        ESP_LOGI(TAG_AP, "Elliot's AP");
+    } else if (CONFIG_ESP_FTM_LOC_AP_SSID == 1) {
+        ESP_LOGI(TAG_AP, "Max's AP");
+    } else if (CONFIG_ESP_FTM_LOC_AP_SSID == 2) {
+        ESP_LOGI(TAG_AP, "Shivam's AP");
+    }
+#else
+    // Enable station mode
+    ESP_LOGI(TAG_AP, "No AP mode");
 #endif
 
     /* Register commands */

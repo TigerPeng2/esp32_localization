@@ -27,4 +27,16 @@ menu "Example Configuration"
         bool "Show RSSI levels"
         default y
 
+    config ESP_FTM_LOC_AP_ENABLE
+        bool "Enable AP mode"
+        default n
+
+    config ESP_FTM_LOC_AP_SSID
+        depends on ESP_FTM_LOC_AP_ENABLE
+        int "AP SSID: Elliot, Max, Shivam"
+        default 0
+        help
+            0: elliot-ftm
+            1: max-ftm
+            2: shivam-ftm
 endmenu
