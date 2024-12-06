@@ -10,6 +10,8 @@
   },
   "idf.gitPath": "git",
   "files.associations": {
-    "nvs_flash.h": "c"
+    "nvs_flash.h": "c",
+    "inttypes.h": "c",
+    "newlib.h": "c"
   }
 }

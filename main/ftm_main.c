@@ -25,18 +25,6 @@
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 
-#define LEDC_TIMER              LEDC_TIMER_0
-#define LEDC_MODE               LEDC_LOW_SPEED_MODE
-#if CONFIG_ESP_FTM_LOC_STATION
-#define LEDC_OUTPUT_IO          (15) // Onboard led to indicate power when in station mode
-#else
-#define LEDC_OUTPUT_IO          (12) // Output LED
-#endif
-#define LEDC_CHANNEL            LEDC_CHANNEL_0
-#define LEDC_DUTY_RES           LEDC_TIMER_13_BIT // Set duty resolution to 13 bits
-#define LEDC_DUTY               (4096) // Set duty to 50%. (2 ** 13) * 50% = 4096
-#define LEDC_FREQUENCY          (4000) // Frequency in Hertz. Set frequency at 4 kHz
-
 typedef struct {
     struct arg_str *ssid;
     struct arg_str *password;
@@ -72,6 +60,14 @@ typedef struct {
     struct arg_end *end;
 } wifi_ftm_args_t;
 
+typedef struct {
+    /* FTM Initiator */
+    char *name;
+    uint32_t r_duty;
+    uint32_t g_duty;
+    uint32_t b_duty;
+} loc_info_t;
+
 static wifi_sta_args_t sta_args;
 // static wifi_ap_args_t ap_args;
 static wifi_scan_arg_t scan_args;
@@ -85,10 +81,25 @@ wifi_config_t g_ap_config = {
 
 #define ETH_ALEN 6
 #define MAX_CONNECT_RETRY_ATTEMPTS  5
-#define DEFAULT_WAIT_TIME_MS        (10 * 1000)
+#define DEFAULT_WAIT_TIME_MS        (5 * 1000)
 #define MAX_FTM_BURSTS          8
 #define DEFAULT_AP_CHANNEL      1
 #define DEFAULT_AP_BANDWIDTH    20
+
+#define LEDC_TIMER              LEDC_TIMER_0
+#define LEDC_MODE               LEDC_LOW_SPEED_MODE
+#if CONFIG_ESP_FTM_LOC_STATION
+#define LEDC_OUTPUT_IO          (15) // Onboard led to indicate power when in station mode
+#define LEDC_OUTPUT_R           (9)
+#define LEDC_OUTPUT_G           (11)
+#define LEDC_OUTPUT_B           (12)
+#else
+#define LEDC_OUTPUT_IO          (12) // Output LED
+#endif
+#define LEDC_CHANNEL            LEDC_CHANNEL_0
+#define LEDC_DUTY_RES           LEDC_TIMER_13_BIT // Set duty resolution to 13 bits
+#define LEDC_DUTY               (4096) // Set duty to 50%. (2 ** 13) * 50% = 4096
+#define LEDC_FREQUENCY          (4000) // Frequency in Hertz. Set frequency at 4 kHz
 
 static bool s_reconnect = true;
 static int s_retry_num = 0;
@@ -713,8 +724,8 @@ static int wifi_cmd_ftm_a(char* ssid)
     EventBits_t bits;
 
     wifi_ftm_initiator_cfg_t ftmi_cfg = {
-        .frm_count = 16,
-        .burst_period = 1,
+        .frm_count = 32,
+        .burst_period = 2,
         .use_get_report_api = true,
     };
 
@@ -855,6 +866,40 @@ static void example_ledc_init(void)
     };
     ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
+#if CONFIG_ESP_FTM_LOC_STATION
+    ledc_channel_config_t ledc_channel_r = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL_0,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = LEDC_OUTPUT_R,
+        .duty           = 0, // Set duty to 0%
+        .hpoint         = 0
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_r));
+
+    ledc_channel_config_t ledc_channel_g = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL_1,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = LEDC_OUTPUT_G,
+        .duty           = 0, // Set duty to 0%
+        .hpoint         = 0
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_g));
+
+    ledc_channel_config_t ledc_channel_b = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL_2,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = LEDC_OUTPUT_B,
+        .duty           = 0, // Set duty to 0%
+        .hpoint         = 0
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_b));
+#else
     // Prepare and then apply the LEDC PWM channel configuration
     ledc_channel_config_t ledc_channel = {
         .speed_mode     = LEDC_MODE,
@@ -866,15 +911,32 @@ static void example_ledc_init(void)
         .hpoint         = 0
     };
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
+#endif
+}
+
+static void set_leds_with_loc(loc_info_t loc_info) {
+    // Set duty for red
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_0, loc_info.r_duty));
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_0));
+
+    // Set duty for green
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, loc_info.g_duty));
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1));
+
+    // Set duty for blue
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, loc_info.b_duty));
+    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
 }
 
 void app_main(void)
 {
     example_ledc_init();
+#if CONFIG_ESP_FTM_LOC_AP_ENABLE
     // Set duty to 50%
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0));
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, LEDC_DUTY));
     // Update duty to apply the new value
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
+#endif
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -923,15 +985,67 @@ void app_main(void)
     uint64_t b_dist = 0;
     int32_t b_rssi = 0;
 
-    for (int i = 0; i < 50; i++) {
-        wifi_cmd_ftm_a("red");
-        g_dist = s_dist_est;
-        g_rssi = s_rssi_est;
+    loc_info_t laser_cutter = { // Laser Cutter is purple
+        .name = "Laser Cutter",
+        .r_duty = 4096,
+        .g_duty = 8192,
+        .b_duty = 4096
+    };
 
-        wifi_cmd_ftm_a("green");
+    loc_info_t front_desk = { // Front Desk is green
+        .name = "Front Desk",
+        .r_duty = 8192,
+        .g_duty = 0,
+        .b_duty = 8192
+    };
+
+    loc_info_t printers = { // 3D Printers are blue
+        .name = "3D Printers",
+        .r_duty = 8192,
+        .g_duty = 8192,
+        .b_duty = 0
+    };
+
+    loc_info_t bl_table = { // Backleft table is red
+        .name = "Back Left Table",
+        .r_duty = 0,
+        .g_duty = 8192,
+        .b_duty = 8192
+    };
+
+    loc_info_t br_table = { // Backright table is teal
+        .name = "Back Right Table",
+        .r_duty = 8192,
+        .g_duty = 1024,
+        .b_duty = 6144
+    };
+
+    loc_info_t front_table = { // Front table is brown/orange
+        .name = "Front Table",
+        .r_duty = 1024,
+        .g_duty = 6144,
+        .b_duty = 8192
+    };
+
+    loc_info_t toolboxes = { // Tool boxes are white
+        .name = "Tool Boxes",
+        .r_duty = 4096,
+        .g_duty = 4096,
+        .b_duty = 4096
+    };
+
+    for (int i = 0; i < 50; i++) {
+        set_leds_with_loc(laser_cutter); // white
+        wifi_cmd_ftm_a("red");
         r_dist = s_dist_est;
         r_rssi = s_rssi_est;
 
+        set_leds_with_loc(printers); //brown/orange
+        wifi_cmd_ftm_a("green");
+        g_dist = s_dist_est;
+        b_rssi = s_rssi_est;
+
+        set_leds_with_loc(front_desk); // teal
         wifi_cmd_ftm_a("blue"); 
         b_dist = s_dist_est;
         b_rssi = s_rssi_est;
