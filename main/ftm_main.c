@@ -27,10 +27,14 @@
 
 #define LEDC_TIMER              LEDC_TIMER_0
 #define LEDC_MODE               LEDC_LOW_SPEED_MODE
-#define LEDC_OUTPUT_IO          (3) // Define the output GPIO
+#if CONFIG_ESP_FTM_LOC_STATION
+#define LEDC_OUTPUT_IO          (15) // Onboard led to indicate power when in station mode
+#else
+#define LEDC_OUTPUT_IO          (12) // Output LED
+#endif
 #define LEDC_CHANNEL            LEDC_CHANNEL_0
 #define LEDC_DUTY_RES           LEDC_TIMER_13_BIT // Set duty resolution to 13 bits
-#define LEDC_DUTY               (7168) // Set duty to 50%. (2 ** 13) * 50% = 4096
+#define LEDC_DUTY               (4096) // Set duty to 50%. (2 ** 13) * 50% = 4096
 #define LEDC_FREQUENCY          (4000) // Frequency in Hertz. Set frequency at 4 kHz
 
 typedef struct {
@@ -100,6 +104,7 @@ static const int FTM_REPORT_BIT = BIT0;
 static const int FTM_FAILURE_BIT = BIT1;
 static uint8_t s_ftm_report_num_entries;
 static uint64_t s_rtt_est, s_dist_est;
+static int32_t s_rssi_est;
 static bool s_ap_started;
 static uint8_t s_ap_channel;
 static uint8_t s_ap_bssid[ETH_ALEN];
@@ -125,7 +130,7 @@ wifi_ap_record_t *g_ap_list_buffer;
 static void event_handler(void *arg, esp_event_base_t event_base,
                           int32_t event_id, void *event_data)
 {
-	if (event_id == WIFI_EVENT_STA_CONNECTED) {
+	if (event_id == WIFI_EVENT_STA_CONNECTED) { // discard
         wifi_event_sta_connected_t *event = (wifi_event_sta_connected_t *)event_data;
 
         ESP_LOGI(TAG_STA, "Connected to %s (BSSID: "MACSTR", Channel: %d)", event->ssid,
@@ -135,7 +140,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         s_ap_channel = event->channel;
         xEventGroupClearBits(s_wifi_event_group, DISCONNECTED_BIT);
         xEventGroupSetBits(s_wifi_event_group, CONNECTED_BIT);
-    } else if (event_id == WIFI_EVENT_STA_DISCONNECTED) {
+    } else if (event_id == WIFI_EVENT_STA_DISCONNECTED) { // discard
         if (s_reconnect && ++s_retry_num < MAX_CONNECT_RETRY_ATTEMPTS) {
             ESP_LOGI(TAG_STA, "sta disconnect, retry attempt %d...", s_retry_num);
             esp_wifi_connect();
@@ -148,6 +153,8 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         wifi_event_ftm_report_t *event = (wifi_event_ftm_report_t *) event_data;
 
         s_rtt_est = 0;
+        s_rssi_est = 0;
+        uint8_t num_entries = event->ftm_report_num_entries;
 
         // This is the part where I basically redo the entire RTT calculation, because I think the decimal precise calculation
         // is trapped in the precompiled libraries and I can't edit what it sends back to me.
@@ -164,13 +171,19 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         }
 
         for (int i = 0; i < event->ftm_report_num_entries; i++) {
-            s_rtt_est += (uint64_t)ftm_report[i].rtt * 1000; // convert to femtoseconds
+            if (ftm_report[i].rtt != UINT32_MAX) {
+                s_rtt_est += (uint64_t)ftm_report[i].rtt * 1000; // convert to femtoseconds
+                s_rssi_est += ftm_report[i].rssi;
+            } else {
+                num_entries--;
+            }
+            // ESP_LOGI(TAG_STA, "RTT: %" PRIu64 "", (uint64_t) ftm_report[i].rtt * 1000);
+            // ESP_LOGI(TAG_STA, "TOTAL_RTT: %" PRIu64 "", s_rtt_est);
         }
 
-        s_rtt_est /= event->ftm_report_num_entries;
-
-        // 18,446,744,073,709,551,615 femtoseconds is the maximum value for RTT, 20 digits, 18.446744073709551615 seconds
+        s_rtt_est /= num_entries;
         s_dist_est = s_rtt_est / 2 * 299702547; // now in 10^13 greater than actual distance
+        s_rssi_est /= num_entries;
 
         s_ftm_report_num_entries = event->ftm_report_num_entries;
         if (event->status == FTM_STATUS_SUCCESS) {
@@ -693,6 +706,65 @@ ftm_responder:
     return 0;
 }
 
+static int wifi_cmd_ftm_a(char* ssid)
+{
+    wifi_ap_record_t *ap_record;
+    uint32_t wait_time_ms = DEFAULT_WAIT_TIME_MS;
+    EventBits_t bits;
+
+    wifi_ftm_initiator_cfg_t ftmi_cfg = {
+        .frm_count = 32,
+        .burst_period = 2,
+        .use_get_report_api = true,
+    };
+
+    bits = xEventGroupWaitBits(s_wifi_event_group, CONNECTED_BIT, 0, 1, 0);
+    if (strlen(ssid) > 0) {
+        ap_record = find_ftm_responder_ap(ssid);
+        if (ap_record) {
+            memcpy(ftmi_cfg.resp_mac, ap_record->bssid, 6);
+            ftmi_cfg.channel = ap_record->primary;
+        } else {
+            return 0;
+        }
+    } else {
+        ESP_LOGE(TAG_STA, "Provide SSID of the AP in disconnected state!");
+        return 0;
+    }
+
+    // ESP_LOGI(TAG_STA, "Requesting FTM session with Frm Count - %d, Burst Period - %dmSec (0: No Preference)",
+    //         ftmi_cfg.frm_count, ftmi_cfg.burst_period*100);
+
+    if (ESP_OK != esp_wifi_ftm_initiate_session(&ftmi_cfg)) {
+        ESP_LOGE(TAG_STA, "Failed to start FTM session");
+        return 0;
+    }
+
+    if (ftmi_cfg.burst_period) {
+        /* Wait at least double the duration of maximum FTM bursts */
+        wait_time_ms = (ftmi_cfg.burst_period * 100) * (MAX_FTM_BURSTS * 2);
+    }
+    bits = xEventGroupWaitBits(s_ftm_event_group, FTM_REPORT_BIT | FTM_FAILURE_BIT,
+                                        pdTRUE, pdFALSE, wait_time_ms / portTICK_PERIOD_MS);
+    if (bits & FTM_REPORT_BIT) {
+        /* Print detailed data from FTM session */
+        // ftm_print_report();
+        // // ESP_LOGI(TAG_STA, "Estimated RTT - %" PRId32 " nSec, Estimated Distance - %" PRId32 ".%02" PRId32 " meters",
+        // //                   s_rtt_est, s_dist_est / 100, s_dist_est % 100);
+        // ESP_LOGI(TAG_STA, "%" PRIu64 " femtoseconds, %" PRIu64 ".%04" PRIu64 " cm, %" PRId32 " dBm",
+        //                 s_rtt_est, s_dist_est / 10000000000000, (s_dist_est % 10000000000000) / 1000000000, s_rssi_est);
+    } else if (bits & FTM_FAILURE_BIT) {
+        /* FTM Failure case */
+        ESP_LOGE(TAG_STA, "FTM procedure failed!");
+    } else {
+        /* Timeout, end session gracefully */
+        ESP_LOGE(TAG_STA, "FTM procedure timed out!");
+        esp_wifi_ftm_end_session();
+    }
+
+    return 0;
+}
+
 void register_wifi(void)
 {
     sta_args.ssid = arg_str0(NULL, NULL, "<ssid>", "SSID of AP");
@@ -794,30 +866,6 @@ static void example_ledc_init(void)
         .hpoint         = 0
     };
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
-
-    ledc_channel_config_t ledc_channel2 = {
-        .speed_mode     = LEDC_MODE,
-        .channel        = LEDC_CHANNEL_1,
-        .timer_sel      = LEDC_TIMER,
-        .intr_type      = LEDC_INTR_DISABLE,
-        .gpio_num       = 5,
-        .duty           = 0, // Set duty to 0%
-        .hpoint         = 0
-    };
-
-    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel2));
-
-    ledc_channel_config_t ledc_channel3 = {
-        .speed_mode     = LEDC_MODE,
-        .channel        = LEDC_CHANNEL_2,
-        .timer_sel      = LEDC_TIMER,
-        .intr_type      = LEDC_INTR_DISABLE,
-        .gpio_num       = 7,
-        .duty           = 0, // Set duty to 0%
-        .hpoint         = 0
-    };
-
-    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel3));
 }
 
 void app_main(void)
@@ -827,13 +875,6 @@ void app_main(void)
     ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0));
     // Update duty to apply the new value
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, 0));
-    // Update duty to apply the new value
-    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1));
-
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, LEDC_DUTY));
-    // Update duty to apply the new value
-    ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -844,24 +885,20 @@ void app_main(void)
 
     initialise_wifi();
 
-    esp_console_repl_t *repl = NULL;
-    esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
-
-    repl_config.prompt = "ftm>";
-
 #if defined(CONFIG_ESP_CONSOLE_UART_DEFAULT) || defined(CONFIG_ESP_CONSOLE_UART_CUSTOM)
     esp_console_dev_uart_config_t uart_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_console_new_repl_uart(&uart_config, &repl_config, &repl));
 
-#elif defined(CONFIG_ESP_CONSOLE_USB_CDC)
+#elif !CONFIG_ESP_FTM_LOC_AP_ENABLE && !CONFIG_ESP_FTM_LOC_STATION && defined(CONFIG_ESP_CONSOLE_USB_CDC)
+    esp_console_repl_t *repl = NULL;
+    esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
+    repl_config.prompt = "ftm>";
+
     esp_console_dev_usb_cdc_config_t hw_config = ESP_CONSOLE_DEV_CDC_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_console_new_repl_usb_cdc(&hw_config, &repl_config, &repl));
-
 #elif defined(CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG)
     esp_console_dev_usb_serial_jtag_config_t hw_config = ESP_CONSOLE_DEV_USB_SERIAL_JTAG_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_console_new_repl_usb_serial_jtag(&hw_config, &repl_config, &repl));
-#else
-#error Unsupported console type
 #endif
 
 #if CONFIG_ESP_FTM_LOC_AP_ENABLE
@@ -875,11 +912,35 @@ void app_main(void)
         ssid = "blue";
     }
     wifi_cmd_ap_set(ssid, "", DEFAULT_AP_CHANNEL, DEFAULT_AP_BANDWIDTH);
-#else
-    // Enable station mode
-    ESP_LOGI(TAG_AP, "No AP mode");
-#endif
 
+#elif CONFIG_ESP_FTM_LOC_STATION
+    // Enable station mode
+    ESP_LOGI(TAG_AP, "Station mode");
+    uint64_t g_dist = 0;
+    int32_t g_rssi = 0;
+    uint64_t r_dist = 0;
+    int32_t r_rssi = 0;
+    uint64_t b_dist = 0;
+    int32_t b_rssi = 0;
+
+    for (int i = 0; i < 50; i++) {
+        wifi_cmd_ftm_a("red");
+        g_dist = s_dist_est;
+        g_rssi = s_rssi_est;
+
+        wifi_cmd_ftm_a("green");
+        r_dist = s_dist_est;
+        r_rssi = s_rssi_est;
+
+        wifi_cmd_ftm_a("blue"); 
+        b_dist = s_dist_est;
+        b_rssi = s_rssi_est;
+
+        ESP_LOGI(TAG_STA, "Tuple:%" PRIu64 ".%04" PRIu64 ",%" PRId32 ",%"PRIu64 ".%04" PRIu64 ",%" PRId32 ",%"PRIu64 ".%04" PRIu64 ",%" PRId32,
+                         r_dist / 10000000000000, (r_dist % 10000000000000) / 1000000000, r_rssi, g_dist / 10000000000000,
+                         (g_dist % 10000000000000) / 1000000000, g_rssi, b_dist / 10000000000000, (b_dist % 10000000000000) / 1000000000, b_rssi);
+    }
+#else
     /* Register commands */
     register_system();
     register_wifi();
@@ -901,4 +962,6 @@ void app_main(void)
 
     // start console REPL
     ESP_ERROR_CHECK(esp_console_start_repl(repl));
+
+#endif
 }

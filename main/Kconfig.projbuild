@@ -39,4 +39,8 @@ menu "Example Configuration"
             0: red
             1: green
             2: blue
+
+    config ESP_FTM_LOC_STATION
+        bool "Enable Station mode"
+        default n
 endmenu

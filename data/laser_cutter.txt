@@ -1,0 +1,4 @@
+Executing action: monitor
+Running idf_monitor in directory /Users/tpeng/esp/ftm
+Executing "/Users/tpeng/.espressif/python_env/idf5.5_py3.12_env/bin/python /Users/tpeng/esp/esp-idf/tools/idf_monitor.py -p /dev/cu.usbmodem1101 -b 115200 --toolchain-prefix xtensa-esp32s2-elf- --target esp32s2 --revision 0 /Users/tpeng/esp/ftm/build/ftm.elf -m '/Users/tpeng/.espressif/python_env/idf5.5_py3.12_env/bin/python' '/Users/tpeng/esp/esp-idf/tools/idf.py' '-p' '/dev/cu.usbmodem1101'"...
+[Errno 2] could not open port /dev/cu.usbmodem1101: [Errno 2] No such file or directory: '/dev/cu.usbmodem1101'
