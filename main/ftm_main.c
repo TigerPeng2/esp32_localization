@@ -713,7 +713,7 @@ static int wifi_cmd_ftm_a(char* ssid)
     EventBits_t bits;
 
     wifi_ftm_initiator_cfg_t ftmi_cfg = {
-        .frm_count = 32,
+        .frm_count = 8,
         .burst_period = 2,
         .use_get_report_api = true,
     };
