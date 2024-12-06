@@ -1,0 +1,552 @@
+Executing action: monitor
+Running idf_monitor in directory /Users/tpeng/esp/ftm
+Executing "/Users/tpeng/.espressif/python_env/idf5.5_py3.12_env/bin/python /Users/tpeng/esp/esp-idf/tools/idf_monitor.py -p /dev/cu.usbmodem1101 -b 115200 --toolchain-prefix xtensa-esp32s2-elf- --target esp32s2 --revision 0 /Users/tpeng/esp/ftm/build/ftm.elf -m '/Users/tpeng/.espressif/python_env/idf5.5_py3.12_env/bin/python' '/Users/tpeng/esp/esp-idf/tools/idf.py' '-p' '/dev/cu.usbmodem1101'"...
+[0;32mI (30) boot: ESP-IDF v5.4-dev-4076-gce6085349f 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Nov 25 2024 16:40:00[0m
+[0;32mI (31) boot: chip revision: v1.0[0m
+[0;32mI (31) boot: efuse block revision: v0.2[0m
+[0;32mI (31) boot.esp32s2: SPI Speed      : 80MHz[0m
+[0;32mI (31) boot.esp32s2: SPI Mode       : DIO[0m
+[0;32mI (31) boot.esp32s2: SPI Flash Size : 2MB[0m
+[0;32mI (31) boot: Enabling RNG early entropy source...[0m
+[0;32mI (31) boot: Partition Table:[0m
+[0;32mI (32) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (33) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (34) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (35) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (36) boot: End of partition table[0m
+[0;32mI (36) esp_image: segment 0: paddr=00010020 vaddr=3f000020 size=187c8h (100296) map[0m
+[0;32mI (56) esp_image: segment 1: paddr=000287f0 vaddr=3ff9e010 size=0001ch (    28) load[0m
+[0;32mI (58) esp_image: segment 2: paddr=00028814 vaddr=3ffc9780 size=038f0h ( 14576) load[0m
+[0;32mI (61) esp_image: segment 3: paddr=0002c10c vaddr=40024000 size=03f0ch ( 16140) load[0m
+[0;32mI (65) esp_image: segment 4: paddr=00030020 vaddr=40080020 size=7a7ech (501740) map[0m
+[0;32mI (164) esp_image: segment 5: paddr=000aa814 vaddr=40027f0c size=11870h ( 71792) load[0m
+[0;32mI (192) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (192) boot: Disabling RNG early entropy source...[0m
+[0;32mI (213) main_task: Started on CPU0[0m
+[0;32mI (213) main_task: Calling app_main()[0m
+[0;32mI (223) wifi_init: rx ba win: 6[0m
+[0;32mI (223) wifi_init: accept mbox: 6[0m
+[0;32mI (223) wifi_init: tcpip mbox: 32[0m
+[0;32mI (223) wifi_init: udp mbox: 6[0m
+[0;32mI (223) wifi_init: tcp mbox: 6[0m
+[0;32mI (223) wifi_init: tcp tx win: 5760[0m
+[0;32mI (223) wifi_init: tcp rx win: 5760[0m
+[0;32mI (223) wifi_init: tcp mss: 1440[0m
+[0;32mI (223) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (223) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (223) phy_init: phy_version 2600,eda41b5,Sep  2 2024,19:28:08[0m
+[0;32mI (273) ftm_ap: Station mode[0m
+[0;32mI (273) ftm_station: Scanning for red[0m
+[0;32mI (2773) ftm_station: sta scan done[0m
+[0;33mW (2773) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 75 mSec[0m
+[0;33mW (2783) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (4283) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 172.329 nSec, Avg RSSI: -63[0m
+[0;32mI (4293) ftm_station: Scanning for green[0m
+[0;32mI (6793) ftm_station: sta scan done[0m
+[0;33mW (6793) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 93 mSec[0m
+[0;33mW (6803) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (8333) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 133.646 nSec, Avg RSSI: -59[0m
+[0;32mI (8343) ftm_station: Scanning for blue[0m
+[0;32mI (10843) ftm_station: sta scan done[0m
+[0;33mW (10843) wifi:Starting FTM session with 80:65:99:e4:05:67 in 82 mSec[0m
+[0;33mW (10853) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (12363) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 81.855 nSec, Avg RSSI: -51[0m
+[0;32mI (12373) ftm_station: Tuple:2582.3753,-63,2002.7078,-59,1226.6129,-51[0m
+[0;32mI (12383) ftm_station: Scanning for red[0m
+[0;32mI (14883) ftm_station: sta scan done[0m
+[0;33mW (14883) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 48 mSec[0m
+[0;33mW (14893) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (16373) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 226.146 nSec, Avg RSSI: -71[0m
+[0;32mI (16393) ftm_station: Scanning for green[0m
+[0;32mI (18893) ftm_station: sta scan done[0m
+[0;33mW (18893) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 76 mSec[0m
+[0;33mW (18903) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (20403) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 129.32 nSec, Avg RSSI: -57[0m
+[0;32mI (20413) ftm_station: Scanning for blue[0m
+[0;32mI (22913) ftm_station: sta scan done[0m
+[0;33mW (22913) wifi:Starting FTM session with 80:65:99:e4:05:67 in 96 mSec[0m
+[0;33mW (22923) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (24443) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 51.210 nSec, Avg RSSI: -55[0m
+[0;32mI (24453) ftm_station: Tuple:3388.8320,-71,1933.5725,-57,767.3898,-55[0m
+[0;32mI (24463) ftm_station: Scanning for red[0m
+[0;32mI (26963) ftm_station: sta scan done[0m
+[0;33mW (26963) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 51 mSec[0m
+[0;33mW (26973) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (28463) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 118.642 nSec, Avg RSSI: -58[0m
+[0;32mI (28473) ftm_station: Scanning for green[0m
+[0;32mI (30973) ftm_station: sta scan done[0m
+[0;33mW (30973) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 79 mSec[0m
+[0;33mW (30983) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (32493) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 69.960 nSec, Avg RSSI: -51[0m
+[0;32mI (32503) ftm_station: Scanning for blue[0m
+[0;32mI (35003) ftm_station: sta scan done[0m
+[0;33mW (35003) wifi:Starting FTM session with 80:65:99:e4:05:67 in 88 mSec[0m
+[0;33mW (35013) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (36523) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 89.718 nSec, Avg RSSI: -56[0m
+[0;32mI (36533) ftm_station: Tuple:1777.8757,-58,1048.3619,-51,1344.4385,-56[0m
+[0;32mI (36543) ftm_station: Scanning for red[0m
+[0;32mI (39043) ftm_station: sta scan done[0m
+[0;33mW (39043) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 53 mSec[0m
+[0;33mW (39053) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (40533) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 161.694 nSec, Avg RSSI: -64[0m
+[0;32mI (40543) ftm_station: Scanning for green[0m
+[0;32mI (43043) ftm_station: sta scan done[0m
+[0;33mW (43043) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 93 mSec[0m
+[0;33mW (43053) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (44583) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 102.83 nSec, Avg RSSI: -54[0m
+[0;32mI (44593) ftm_station: Scanning for blue[0m
+[0;32mI (47093) ftm_station: sta scan done[0m
+[0;33mW (47093) wifi:Starting FTM session with 80:65:99:e4:05:67 in 81 mSec[0m
+[0;33mW (47103) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (48613) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 71.976 nSec, Avg RSSI: -52[0m
+[0;32mI (48623) ftm_station: Tuple:2423.0066,-64,1529.7387,-54,1078.5738,-52[0m
+[0;32mI (48633) ftm_station: Scanning for red[0m
+[0;32mI (51133) ftm_station: sta scan done[0m
+[0;33mW (51133) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 48 mSec[0m
+[0;33mW (51143) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (52613) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 120.363 nSec, Avg RSSI: -64[0m
+[0;32mI (52623) ftm_station: Scanning for green[0m
+[0;32mI (55123) ftm_station: sta scan done[0m
+[0;33mW (55123) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 96 mSec[0m
+[0;33mW (55133) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (56653) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 111.542 nSec, Avg RSSI: -52[0m
+[0;32mI (56663) ftm_station: Scanning for blue[0m
+[0;32mI (59163) ftm_station: sta scan done[0m
+[0;33mW (59163) wifi:Starting FTM session with 80:65:99:e4:05:67 in 95 mSec[0m
+[0;33mW (59173) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (60693) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 57.57 nSec, Avg RSSI: -49[0m
+[0;32mI (60703) ftm_station: Tuple:1803.6626,-64,1671.4850,-52,855.0068,-49[0m
+[0;32mI (60713) ftm_station: Scanning for red[0m
+[0;32mI (63213) ftm_station: sta scan done[0m
+[0;33mW (63213) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 50 mSec[0m
+[0;33mW (63223) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (64693) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 125.302 nSec, Avg RSSI: -65[0m
+[0;32mI (64703) ftm_station: Scanning for green[0m
+[0;32mI (67203) ftm_station: sta scan done[0m
+[0;33mW (67203) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 99 mSec[0m
+[0;33mW (67213) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (68753) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 97.708 nSec, Avg RSSI: -54[0m
+[0;32mI (68763) ftm_station: Scanning for blue[0m
+[0;32mI (71263) ftm_station: sta scan done[0m
+[0;33mW (71263) wifi:Starting FTM session with 80:65:99:e4:05:67 in 77 mSec[0m
+[0;33mW (71273) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (72783) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 47.500 nSec, Avg RSSI: -50[0m
+[0;32mI (72793) ftm_station: Tuple:1877.6804,-65,1464.1798,-54,711.8020,-50[0m
+[0;32mI (72803) ftm_station: Scanning for red[0m
+[0;32mI (75303) ftm_station: sta scan done[0m
+[0;33mW (75303) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 44 mSec[0m
+[0;33mW (75313) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (76793) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 143.437 nSec, Avg RSSI: -64[0m
+[0;32mI (76803) ftm_station: Scanning for green[0m
+[0;32mI (79303) ftm_station: sta scan done[0m
+[0;33mW (79303) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 81 mSec[0m
+[0;33mW (79313) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (80813) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 65.625 nSec, Avg RSSI: -48[0m
+[0;32mI (80833) ftm_station: Scanning for blue[0m
+[0;32mI (83333) ftm_station: sta scan done[0m
+[0;33mW (83333) wifi:Starting FTM session with 80:65:99:e4:05:67 in 92 mSec[0m
+[0;33mW (83343) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (84853) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 87.853 nSec, Avg RSSI: -55[0m
+[0;32mI (84873) ftm_station: Tuple:2149.4356,-64,983.4052,-48,1316.4922,-55[0m
+[0;32mI (84883) ftm_station: Scanning for red[0m
+[0;32mI (87383) ftm_station: sta scan done[0m
+[0;33mW (87393) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 45 mSec[0m
+[0;33mW (87403) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (88873) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 106.855 nSec, Avg RSSI: -54[0m
+[0;32mI (88883) ftm_station: Scanning for green[0m
+[0;32mI (91383) ftm_station: sta scan done[0m
+[0;33mW (91383) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 84 mSec[0m
+[0;33mW (91393) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (92903) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 69.859 nSec, Avg RSSI: -47[0m
+[0;32mI (92913) ftm_station: Scanning for blue[0m
+[0;32mI (95413) ftm_station: sta scan done[0m
+[0;33mW (95413) wifi:Starting FTM session with 80:65:99:e4:05:67 in 95 mSec[0m
+[0;33mW (95423) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (96953) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 72.737 nSec, Avg RSSI: -52[0m
+[0;32mI (96963) ftm_station: Tuple:1601.2420,-54,1046.8537,-47,1089.9814,-52[0m
+[0;32mI (96973) ftm_station: Scanning for red[0m
+[0;32mI (99473) ftm_station: sta scan done[0m
+[0;33mW (99473) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 40 mSec[0m
+[0;33mW (99483) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (100963) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 122.500 nSec, Avg RSSI: -57[0m
+[0;32mI (100973) ftm_station: Scanning for green[0m
+[0;32mI (103473) ftm_station: sta scan done[0m
+[0;33mW (103473) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 78 mSec[0m
+[0;33mW (103483) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (104983) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 86.89 nSec, Avg RSSI: -46[0m
+[0;32mI (104993) ftm_station: Scanning for blue[0m
+[0;32mI (107493) ftm_station: sta scan done[0m
+[0;33mW (107493) wifi:Starting FTM session with 80:65:99:e4:05:67 in 98 mSec[0m
+[0;33mW (107503) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (109033) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 93.333 nSec, Avg RSSI: -53[0m
+[0;32mI (109053) ftm_station: Tuple:1835.6865,-57,1290.0579,-46,1398.6198,-53[0m
+[0;32mI (109063) ftm_station: Scanning for red[0m
+[0;32mI (111563) ftm_station: sta scan done[0m
+[0;33mW (111563) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 32 mSec[0m
+[0;33mW (111573) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (113033) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 191.230 nSec, Avg RSSI: -63[0m
+[0;32mI (113043) ftm_station: Scanning for green[0m
+[0;32mI (115543) ftm_station: sta scan done[0m
+[0;33mW (115543) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 90 mSec[0m
+[0;33mW (115553) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (117083) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 81.771 nSec, Avg RSSI: -62[0m
+[0;32mI (117093) ftm_station: Scanning for blue[0m
+[0;32mI (119593) ftm_station: sta scan done[0m
+[0;33mW (119593) wifi:Starting FTM session with 80:65:99:e4:05:67 in 80 mSec[0m
+[0;33mW (119603) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (121123) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 91.719 nSec, Avg RSSI: -54[0m
+[0;32mI (121133) ftm_station: Tuple:2865.6112,-63,1225.3543,-62,1374.4228,-54[0m
+[0;32mI (121143) ftm_station: Scanning for red[0m
+[0;32mI (123643) ftm_station: sta scan done[0m
+[0;33mW (123643) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 36 mSec[0m
+[0;33mW (123653) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (125123) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 120.420 nSec, Avg RSSI: -61[0m
+[0;32mI (125133) ftm_station: Scanning for green[0m
+[0;32mI (127633) ftm_station: sta scan done[0m
+[0;33mW (127633) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 84 mSec[0m
+[0;33mW (127643) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (129153) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 61.492 nSec, Avg RSSI: -47[0m
+[0;32mI (129163) ftm_station: Scanning for blue[0m
+[0;32mI (131663) ftm_station: sta scan done[0m
+[0;33mW (131663) wifi:Starting FTM session with 80:65:99:e4:05:67 in 94 mSec[0m
+[0;33mW (131673) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (133203) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 92.80 nSec, Avg RSSI: -55[0m
+[0;32mI (133213) ftm_station: Tuple:1804.5219,-61,921.4717,-47,1379.8320,-55[0m
+[0;32mI (133223) ftm_station: Scanning for red[0m
+[0;32mI (135723) ftm_station: sta scan done[0m
+[0;33mW (135733) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 25 mSec[0m
+[0;33mW (135743) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (137203) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 94.289 nSec, Avg RSSI: -57[0m
+[0;32mI (137213) ftm_station: Scanning for green[0m
+[0;32mI (139713) ftm_station: sta scan done[0m
+[0;33mW (139713) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 88 mSec[0m
+[0;33mW (139723) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (141233) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 56.754 nSec, Avg RSSI: -48[0m
+[0;32mI (141243) ftm_station: Scanning for blue[0m
+[0;32mI (143743) ftm_station: sta scan done[0m
+[0;33mW (143743) wifi:Starting FTM session with 80:65:99:e4:05:67 in 97 mSec[0m
+[0;33mW (143753) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (145273) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 87.752 nSec, Avg RSSI: -54[0m
+[0;32mI (145283) ftm_station: Tuple:1412.9362,-57,850.4736,-48,1314.9835,-54[0m
+[0;32mI (145293) ftm_station: Scanning for red[0m
+[0;32mI (147793) ftm_station: sta scan done[0m
+[0;33mW (147793) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 53 mSec[0m
+[0;33mW (147803) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (149283) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 87.198 nSec, Avg RSSI: -52[0m
+[0;32mI (149293) ftm_station: Scanning for green[0m
+[0;32mI (151793) ftm_station: sta scan done[0m
+[0;33mW (151793) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 91 mSec[0m
+[0;33mW (151803) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (153313) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 90.575 nSec, Avg RSSI: -57[0m
+[0;32mI (153323) ftm_station: Scanning for blue[0m
+[0;32mI (155823) ftm_station: sta scan done[0m
+[0;33mW (155823) wifi:Starting FTM session with 80:65:99:e4:05:67 in 101 mSec[0m
+[0;33mW (155833) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (157353) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 82.308 nSec, Avg RSSI: -53[0m
+[0;32mI (157363) ftm_station: Tuple:1306.6740,-52,1357.2803,-57,1233.4103,-53[0m
+[0;32mI (157373) ftm_station: Scanning for red[0m
+[0;32mI (159873) ftm_station: sta scan done[0m
+[0;33mW (159873) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 53 mSec[0m
+[0;33mW (159883) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (161373) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 122.917 nSec, Avg RSSI: -60[0m
+[0;32mI (161383) ftm_station: Scanning for green[0m
+[0;32mI (163883) ftm_station: sta scan done[0m
+[0;33mW (163883) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 84 mSec[0m
+[0;33mW (163893) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (165403) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 90.575 nSec, Avg RSSI: -55[0m
+[0;32mI (165413) ftm_station: Scanning for blue[0m
+[0;32mI (167913) ftm_station: sta scan done[0m
+[0;33mW (167913) wifi:Starting FTM session with 80:65:99:e4:05:67 in 93 mSec[0m
+[0;33mW (167923) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (169453) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 72.31 nSec, Avg RSSI: -48[0m
+[0;32mI (169463) ftm_station: Tuple:1841.9283,-60,1357.2812,-55,1079.4051,-48[0m
+[0;32mI (169473) ftm_station: Scanning for red[0m
+[0;32mI (171973) ftm_station: sta scan done[0m
+[0;33mW (171973) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 38 mSec[0m
+[0;33mW (171983) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (173463) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 130.573 nSec, Avg RSSI: -62[0m
+[0;32mI (173473) ftm_station: Scanning for green[0m
+[0;32mI (175973) ftm_station: sta scan done[0m
+[0;33mW (175973) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 77 mSec[0m
+[0;33mW (175983) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (177493) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 84.688 nSec, Avg RSSI: -53[0m
+[0;32mI (177513) ftm_station: Scanning for blue[0m
+[0;32mI (180013) ftm_station: sta scan done[0m
+[0;33mW (180023) wifi:Starting FTM session with 80:65:99:e4:05:67 in 75 mSec[0m
+[0;33mW (180033) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (181543) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 77.187 nSec, Avg RSSI: -51[0m
+[0;32mI (181553) ftm_station: Tuple:1956.6590,-62,1269.0609,-53,1156.6715,-51[0m
+[0;32mI (181563) ftm_station: Scanning for red[0m
+[0;32mI (184063) ftm_station: sta scan done[0m
+[0;33mW (184063) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 32 mSec[0m
+[0;33mW (184073) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (185543) wifi:FTM session ends with 28 valid readings out of 28 readings received, Avg raw RTT: 122.210 nSec, Avg RSSI: -58[0m
+[0;32mI (185553) ftm_station: Scanning for green[0m
+[0;32mI (188053) ftm_station: sta scan done[0m
+[0;33mW (188053) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 80 mSec[0m
+[0;33mW (188063) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (189563) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 116.179 nSec, Avg RSSI: -54[0m
+[0;32mI (189573) ftm_station: Scanning for blue[0m
+[0;32mI (192073) ftm_station: sta scan done[0m
+[0;33mW (192073) wifi:Starting FTM session with 80:65:99:e4:05:67 in 100 mSec[0m
+[0;33mW (192083) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (193623) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 113.802 nSec, Avg RSSI: -63[0m
+[0;32mI (193633) ftm_station: Tuple:1831.3382,-58,1740.9715,-54,1705.3474,-63[0m
+[0;32mI (193643) ftm_station: Scanning for red[0m
+[0;32mI (196143) ftm_station: sta scan done[0m
+[0;33mW (196143) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 35 mSec[0m
+[0;33mW (196153) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (197613) wifi:FTM session ends with 30 valid readings out of 31 readings received, Avg raw RTT: 90.0 nSec, Avg RSSI: -49[0m
+[0;32mI (197623) ftm_station: Scanning for green[0m
+[0;32mI (200123) ftm_station: sta scan done[0m
+[0;33mW (200123) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 94 mSec[0m
+[0;33mW (200133) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (201653) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 106.704 nSec, Avg RSSI: -53[0m
+[0;32mI (201663) ftm_station: Scanning for blue[0m
+[0;32mI (204163) ftm_station: sta scan done[0m
+[0;33mW (204163) wifi:Starting FTM session with 80:65:99:e4:05:67 in 92 mSec[0m
+[0;33mW (204173) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (205703) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 94.167 nSec, Avg RSSI: -57[0m
+[0;32mI (205713) ftm_station: Tuple:1348.6674,-49,1598.9749,-53,1411.1064,-57[0m
+[0;32mI (205723) ftm_station: Scanning for red[0m
+[0;32mI (208223) ftm_station: sta scan done[0m
+[0;33mW (208223) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 38 mSec[0m
+[0;33mW (208233) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (209693) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 111.945 nSec, Avg RSSI: -57[0m
+[0;32mI (209703) ftm_station: Scanning for green[0m
+[0;32mI (212203) ftm_station: sta scan done[0m
+[0;33mW (212203) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 97 mSec[0m
+[0;33mW (212213) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (213733) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 136.341 nSec, Avg RSSI: -59[0m
+[0;32mI (213743) ftm_station: Scanning for blue[0m
+[0;32mI (216243) ftm_station: sta scan done[0m
+[0;33mW (216243) wifi:Starting FTM session with 80:65:99:e4:05:67 in 97 mSec[0m
+[0;33mW (216253) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (217773) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 54.839 nSec, Avg RSSI: -49[0m
+[0;32mI (217783) ftm_station: Tuple:1677.5245,-57,2043.0915,-59,821.7717,-49[0m
+[0;32mI (217793) ftm_station: Scanning for red[0m
+[0;32mI (220293) ftm_station: sta scan done[0m
+[0;33mW (220293) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 52 mSec[0m
+[0;33mW (220303) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (221783) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 159.778 nSec, Avg RSSI: -71[0m
+[0;32mI (221793) ftm_station: Scanning for green[0m
+[0;32mI (224293) ftm_station: sta scan done[0m
+[0;33mW (224293) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 90 mSec[0m
+[0;33mW (224303) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (225823) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 70.968 nSec, Avg RSSI: -54[0m
+[0;32mI (225833) ftm_station: Scanning for blue[0m
+[0;32mI (228333) ftm_station: sta scan done[0m
+[0;33mW (228333) wifi:Starting FTM session with 80:65:99:e4:05:67 in 90 mSec[0m
+[0;33mW (228343) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (229873) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 63.177 nSec, Avg RSSI: -51[0m
+[0;32mI (229883) ftm_station: Tuple:2394.3042,-71,1063.4664,-54,946.7243,-51[0m
+[0;32mI (229893) ftm_station: Scanning for red[0m
+[0;32mI (232393) ftm_station: sta scan done[0m
+[0;33mW (232393) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 34 mSec[0m
+[0;33mW (232403) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (233873) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 156.196 nSec, Avg RSSI: -66[0m
+[0;32mI (233883) ftm_station: Scanning for green[0m
+[0;32mI (236383) ftm_station: sta scan done[0m
+[0;33mW (236383) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 83 mSec[0m
+[0;33mW (236393) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (237903) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 66.734 nSec, Avg RSSI: -49[0m
+[0;32mI (237913) ftm_station: Scanning for blue[0m
+[0;32mI (240413) ftm_station: sta scan done[0m
+[0;33mW (240413) wifi:Starting FTM session with 80:65:99:e4:05:67 in 92 mSec[0m
+[0;33mW (240423) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (241953) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 87.760 nSec, Avg RSSI: -51[0m
+[0;32mI (241963) ftm_station: Tuple:2340.6251,-66,1000.0232,-49,1315.1082,-51[0m
+[0;32mI (241973) ftm_station: Scanning for red[0m
+[0;32mI (244473) ftm_station: sta scan done[0m
+[0;33mW (244473) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 37 mSec[0m
+[0;33mW (244483) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (245943) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 99.798 nSec, Avg RSSI: -55[0m
+[0;32mI (245953) ftm_station: Scanning for green[0m
+[0;32mI (248453) ftm_station: sta scan done[0m
+[0;33mW (248453) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 96 mSec[0m
+[0;33mW (248463) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (249993) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 106.304 nSec, Avg RSSI: -52[0m
+[0;32mI (250003) ftm_station: Scanning for blue[0m
+[0;32mI (252503) ftm_station: sta scan done[0m
+[0;33mW (252503) wifi:Starting FTM session with 80:65:99:e4:05:67 in 86 mSec[0m
+[0;33mW (252513) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (254023) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 125.0 nSec, Avg RSSI: -54[0m
+[0;32mI (254033) ftm_station: Tuple:1495.4982,-55,1592.9846,-52,1873.1481,-54[0m
+[0;32mI (254043) ftm_station: Scanning for red[0m
+[0;32mI (256543) ftm_station: sta scan done[0m
+[0;33mW (256543) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 51 mSec[0m
+[0;33mW (256553) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (258043) wifi:FTM session ends with 24 valid readings out of 24 readings received, Avg raw RTT: 97.982 nSec, Avg RSSI: -55[0m
+[0;32mI (258053) ftm_station: Scanning for green[0m
+[0;32mI (260553) ftm_station: sta scan done[0m
+[0;33mW (260553) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 79 mSec[0m
+[0;33mW (260563) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (262083) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 99.844 nSec, Avg RSSI: -49[0m
+[0;32mI (262093) ftm_station: Scanning for blue[0m
+[0;32mI (264593) ftm_station: sta scan done[0m
+[0;33mW (264593) wifi:Starting FTM session with 80:65:99:e4:05:67 in 79 mSec[0m
+[0;33mW (264603) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (266123) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 74.167 nSec, Avg RSSI: -52[0m
+[0;32mI (266133) ftm_station: Tuple:1468.2758,-55,1496.1800,-49,1111.4064,-52[0m
+[0;32mI (266143) ftm_station: Scanning for red[0m
+[0;32mI (268643) ftm_station: sta scan done[0m
+[0;33mW (268643) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 34 mSec[0m
+[0;33mW (268653) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (270113) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 181.351 nSec, Avg RSSI: -63[0m
+[0;32mI (270123) ftm_station: Scanning for green[0m
+[0;32mI (272623) ftm_station: sta scan done[0m
+[0;33mW (272623) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 93 mSec[0m
+[0;33mW (272633) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (274153) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 120.968 nSec, Avg RSSI: -52[0m
+[0;32mI (274163) ftm_station: Scanning for blue[0m
+[0;32mI (276663) ftm_station: sta scan done[0m
+[0;33mW (276663) wifi:Starting FTM session with 80:65:99:e4:05:67 in 93 mSec[0m
+[0;33mW (276673) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (278203) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 77.240 nSec, Avg RSSI: -53[0m
+[0;32mI (278213) ftm_station: Tuple:2717.5711,-63,1812.7237,-52,1157.4532,-53[0m
+[0;32mI (278223) ftm_station: Scanning for red[0m
+[0;32mI (280723) ftm_station: sta scan done[0m
+[0;33mW (280723) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 37 mSec[0m
+[0;33mW (280733) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (282193) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 141.230 nSec, Avg RSSI: -64[0m
+[0;32mI (282203) ftm_station: Scanning for green[0m
+[0;32mI (284703) ftm_station: sta scan done[0m
+[0;33mW (284703) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 96 mSec[0m
+[0;33mW (284713) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (286233) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 100.151 nSec, Avg RSSI: -53[0m
+[0;32mI (286243) ftm_station: Scanning for blue[0m
+[0;32mI (288743) ftm_station: sta scan done[0m
+[0;33mW (288743) wifi:Starting FTM session with 80:65:99:e4:05:67 in 96 mSec[0m
+[0;33mW (288753) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (290283) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 41.719 nSec, Avg RSSI: -48[0m
+[0;32mI (290293) ftm_station: Tuple:2116.3553,-64,1500.7865,-53,625.1685,-48[0m
+[0;32mI (290303) ftm_station: Scanning for red[0m
+[0;32mI (292803) ftm_station: sta scan done[0m
+[0;33mW (292803) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 40 mSec[0m
+[0;33mW (292813) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (294293) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 135.991 nSec, Avg RSSI: -60[0m
+[0;32mI (294303) ftm_station: Scanning for green[0m
+[0;32mI (296803) ftm_station: sta scan done[0m
+[0;33mW (296803) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 78 mSec[0m
+[0;33mW (296813) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (298333) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 131.615 nSec, Avg RSSI: -54[0m
+[0;32mI (298343) ftm_station: Scanning for blue[0m
+[0;32mI (300843) ftm_station: sta scan done[0m
+[0;33mW (300843) wifi:Starting FTM session with 80:65:99:e4:05:67 in 77 mSec[0m
+[0;33mW (300853) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (302363) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 76.615 nSec, Avg RSSI: -52[0m
+[0;32mI (302383) ftm_station: Tuple:2037.8548,-60,1972.2700,-54,1148.0860,-52[0m
+[0;32mI (302393) ftm_station: Scanning for red[0m
+[0;32mI (304893) ftm_station: sta scan done[0m
+[0;33mW (304893) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 33 mSec[0m
+[0;33mW (304903) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (306373) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 126.302 nSec, Avg RSSI: -54[0m
+[0;32mI (306383) ftm_station: Scanning for green[0m
+[0;32mI (308883) ftm_station: sta scan done[0m
+[0;33mW (308883) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 82 mSec[0m
+[0;33mW (308893) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (310413) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 117.134 nSec, Avg RSSI: -54[0m
+[0;32mI (310423) ftm_station: Scanning for blue[0m
+[0;32mI (312923) ftm_station: sta scan done[0m
+[0;33mW (312923) wifi:Starting FTM session with 80:65:99:e4:05:67 in 81 mSec[0m
+[0;33mW (312933) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (314453) wifi:FTM session ends with 28 valid readings out of 28 readings received, Avg raw RTT: 90.681 nSec, Avg RSSI: -53[0m
+[0;32mI (314463) ftm_station: Tuple:1892.6585,-54,1755.2704,-54,1358.8705,-53[0m
+[0;32mI (314473) ftm_station: Scanning for red[0m
+[0;32mI (316973) ftm_station: sta scan done[0m
+[0;33mW (316973) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 35 mSec[0m
+[0;33mW (316983) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (318453) wifi:FTM session ends with 28 valid readings out of 28 readings received, Avg raw RTT: 131.27 nSec, Avg RSSI: -59[0m
+[0;32mI (318463) ftm_station: Scanning for green[0m
+[0;32mI (320963) ftm_station: sta scan done[0m
+[0;33mW (320963) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 84 mSec[0m
+[0;33mW (320973) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (322483) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 188.4 nSec, Avg RSSI: -59[0m
+[0;32mI (322493) ftm_station: Scanning for blue[0m
+[0;32mI (324993) ftm_station: sta scan done[0m
+[0;33mW (324993) wifi:Starting FTM session with 80:65:99:e4:05:67 in 94 mSec[0m
+[0;33mW (325003) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (326523) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 31.804 nSec, Avg RSSI: -45[0m
+[0;32mI (326533) ftm_station: Tuple:1963.4616,-59,2817.2735,-59,476.6014,-45[0m
+[0;32mI (326543) ftm_station: Scanning for red[0m
+[0;32mI (329043) ftm_station: sta scan done[0m
+[0;33mW (329043) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 50 mSec[0m
+[0;33mW (329053) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (330543) wifi:FTM session ends with 26 valid readings out of 26 readings received, Avg raw RTT: 147.356 nSec, Avg RSSI: -63[0m
+[0;32mI (330553) ftm_station: Scanning for green[0m
+[0;32mI (333053) ftm_station: sta scan done[0m
+[0;33mW (333053) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 78 mSec[0m
+[0;33mW (333063) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (334583) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 68.21 nSec, Avg RSSI: -60[0m
+[0;32mI (334593) ftm_station: Scanning for blue[0m
+[0;32mI (337093) ftm_station: sta scan done[0m
+[0;33mW (337093) wifi:Starting FTM session with 80:65:99:e4:05:67 in 78 mSec[0m
+[0;33mW (337103) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (338603) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 82.712 nSec, Avg RSSI: -51[0m
+[0;32mI (338613) ftm_station: Tuple:2208.1518,-63,1019.3098,-60,1239.4527,-51[0m
+[0;32mI (338623) ftm_station: Scanning for red[0m
+[0;32mI (341123) ftm_station: sta scan done[0m
+[0;33mW (341123) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 53 mSec[0m
+[0;33mW (341133) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (342613) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 153.831 nSec, Avg RSSI: -61[0m
+[0;32mI (342623) ftm_station: Scanning for green[0m
+[0;32mI (345123) ftm_station: sta scan done[0m
+[0;33mW (345123) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 92 mSec[0m
+[0;33mW (345133) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (346663) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 118.906 nSec, Avg RSSI: -51[0m
+[0;32mI (346673) ftm_station: Scanning for blue[0m
+[0;32mI (349173) ftm_station: sta scan done[0m
+[0;33mW (349173) wifi:Starting FTM session with 80:65:99:e4:05:67 in 81 mSec[0m
+[0;33mW (349183) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (350693) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 59.325 nSec, Avg RSSI: -50[0m
+[0;32mI (350703) ftm_station: Tuple:2305.1795,-61,1781.8325,-51,888.9950,-50[0m
+[0;32mI (350713) ftm_station: Scanning for red[0m
+[0;32mI (353213) ftm_station: sta scan done[0m
+[0;33mW (353213) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 46 mSec[0m
+[0;33mW (353223) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (354703) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 107.292 nSec, Avg RSSI: -53[0m
+[0;32mI (354713) ftm_station: Scanning for green[0m
+[0;32mI (357213) ftm_station: sta scan done[0m
+[0;33mW (357213) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 84 mSec[0m
+[0;33mW (357223) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (358743) wifi:FTM session ends with 29 valid readings out of 29 readings received, Avg raw RTT: 138.685 nSec, Avg RSSI: -50[0m
+[0;32mI (358753) ftm_station: Scanning for blue[0m
+[0;32mI (361253) ftm_station: sta scan done[0m
+[0;33mW (361253) wifi:Starting FTM session with 80:65:99:e4:05:67 in 84 mSec[0m
+[0;33mW (361263) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (362783) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 61.875 nSec, Avg RSSI: -51[0m
+[0;32mI (362793) ftm_station: Tuple:1607.7882,-53,2078.2258,-50,927.2122,-51[0m
+[0;32mI (362803) ftm_station: Scanning for red[0m
+[0;32mI (365303) ftm_station: sta scan done[0m
+[0;33mW (365303) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 38 mSec[0m
+[0;33mW (365313) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (366793) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 146.927 nSec, Avg RSSI: -62[0m
+[0;32mI (366803) ftm_station: Scanning for green[0m
+[0;32mI (369303) ftm_station: sta scan done[0m
+[0;33mW (369303) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 77 mSec[0m
+[0;33mW (369313) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (370813) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 58.14 nSec, Avg RSSI: -49[0m
+[0;32mI (370823) ftm_station: Scanning for blue[0m
+[0;32mI (373323) ftm_station: sta scan done[0m
+[0;33mW (373323) wifi:Starting FTM session with 80:65:99:e4:05:67 in 98 mSec[0m
+[0;33mW (373333) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (374853) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 106.149 nSec, Avg RSSI: -55[0m
+[0;32mI (374863) ftm_station: Tuple:2201.7287,-62,869.3558,-49,1590.6673,-55[0m
+[0;32mI (374873) ftm_station: Scanning for red[0m
+[0;32mI (377373) ftm_station: sta scan done[0m
+[0;33mW (377373) wifi:Starting FTM session with cc:8d:a2:8b:84:d9 in 52 mSec[0m
+[0;33mW (377383) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (378873) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 141.458 nSec, Avg RSSI: -62[0m
+[0;32mI (378883) ftm_station: Scanning for green[0m
+[0;32mI (381383) ftm_station: sta scan done[0m
+[0;33mW (381383) wifi:Starting FTM session with cc:8d:a2:88:67:3d in 81 mSec[0m
+[0;33mW (381393) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (382913) wifi:FTM session ends with 30 valid readings out of 30 readings received, Avg raw RTT: 78.385 nSec, Avg RSSI: -59[0m
+[0;32mI (382923) ftm_station: Scanning for blue[0m
+[0;32mI (385423) ftm_station: sta scan done[0m
+[0;33mW (385423) wifi:Starting FTM session with 80:65:99:e4:05:67 in 80 mSec[0m
+[0;33mW (385433) wifi:Mode: non-ASAP, Bursts: 8, FTM's per burst: 4, Burst Period: 200mSec, Burst Duration: 32000uSec[0m
+[0;33mW (386933) wifi:FTM session ends with 31 valid readings out of 31 readings received, Avg raw RTT: 76.663 nSec, Avg RSSI: -53[0m
+[0;32mI (386943) ftm_station: Tuple:2119.7801,-62,1174.6216,-59,1148.8173,-53[0m
+[0;32mI (386953) main_task: Returned from app_main()[0m
