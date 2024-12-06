@@ -12,6 +12,8 @@
   "files.associations": {
     "nvs_flash.h": "c",
     "inttypes.h": "c",
-    "newlib.h": "c"
+    "newlib.h": "c",
+    "cmd_system.h": "c",
+    "errno.h": "c"
   }
 }

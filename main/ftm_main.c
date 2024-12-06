@@ -66,6 +66,12 @@ typedef struct {
     uint32_t r_duty;
     uint32_t g_duty;
     uint32_t b_duty;
+    uint32_t r_dist;
+    uint32_t r_std;
+    uint32_t g_dist;
+    uint32_t g_std;
+    uint32_t b_dist;
+    uint32_t b_std;
 } loc_info_t;
 
 static wifi_sta_args_t sta_args;
@@ -100,6 +106,8 @@ wifi_config_t g_ap_config = {
 #define LEDC_DUTY_RES           LEDC_TIMER_13_BIT // Set duty resolution to 13 bits
 #define LEDC_DUTY               (4096) // Set duty to 50%. (2 ** 13) * 50% = 4096
 #define LEDC_FREQUENCY          (4000) // Frequency in Hertz. Set frequency at 4 kHz
+
+#define NUM_LOCATIONS           (7)
 
 static bool s_reconnect = true;
 static int s_retry_num = 0;
@@ -183,7 +191,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
 
         for (int i = 0; i < event->ftm_report_num_entries; i++) {
             if (ftm_report[i].rtt != UINT32_MAX) {
-                s_rtt_est += (uint64_t)ftm_report[i].rtt * 1000; // convert to femtoseconds
+                s_rtt_est += (uint64_t)ftm_report[i].rtt; // convert to femtoseconds
                 s_rssi_est += ftm_report[i].rssi;
             } else {
                 num_entries--;
@@ -193,7 +201,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
         }
 
         s_rtt_est /= num_entries;
-        s_dist_est = s_rtt_est / 2 * 299702547; // now in 10^13 greater than actual distance
+        s_dist_est = s_rtt_est / 2 * 299702547; // now in 10^10 greater than actual distance
         s_rssi_est /= num_entries;
 
         s_ftm_report_num_entries = event->ftm_report_num_entries;
@@ -914,18 +922,86 @@ static void example_ledc_init(void)
 #endif
 }
 
-static void set_leds_with_loc(loc_info_t loc_info) {
+static void set_leds_with_loc(loc_info_t *loc_info) {
     // Set duty for red
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_0, loc_info.r_duty));
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_0, loc_info->r_duty));
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_0));
 
     // Set duty for green
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, loc_info.g_duty));
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_1, loc_info->g_duty));
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_1));
 
     // Set duty for blue
-    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, loc_info.b_duty));
+    ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL_2, loc_info->b_duty));
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL_2));
+}
+
+// static uint32_t absolute_difference(uint32_t a, uint32_t b) {
+//     return (a > b) ? (a - b) : (b - a);
+// }
+
+static uint64_t absolute_difference(uint64_t a, uint64_t b) {
+    return (a > b) ? (a - b) : (b - a);
+}
+
+static uint64_t approx_gaussian(loc_info_t *loc, uint32_t r_dist, uint32_t g_dist, uint32_t b_dist) {
+    uint64_t SCALE_FACTOR = 10000000000; // 1 * 10^10
+    uint64_t C = SCALE_FACTOR / (11 * loc->r_std * loc->g_std * loc->b_std); 
+    // ESP_LOGI(TAG_STA, "C: %" PRIu64 ".%02" PRIu64, C / SCALE_FACTOR, C % SCALE_FACTOR);
+    uint64_t d_r = absolute_difference(loc->r_dist, r_dist);
+    // ESP_LOGI(TAG_STA, "d_r: %" PRIu64, d_r);
+    d_r *= d_r;
+    // ESP_LOGI(TAG_STA, "d_r: %" PRIu64, d_r);
+    d_r *= (SCALE_FACTOR / 2);
+    // ESP_LOGI(TAG_STA, "d_r: %" PRIu64 ".%02" PRIu64, d_r / SCALE_FACTOR, d_r % SCALE_FACTOR);
+    d_r /= (loc->r_std * loc->r_std);
+    // ESP_LOGI(TAG_STA, "d_r: %" PRIu64 ".%02" PRIu64, d_r / SCALE_FACTOR, d_r % SCALE_FACTOR);
+
+    uint64_t d_g = absolute_difference(loc->g_dist, g_dist);
+    d_g *= d_g;
+    d_g *= (SCALE_FACTOR / 2);
+    d_g /= (loc->g_std * loc->g_std);
+    // ESP_LOGI(TAG_STA, "d_g: %" PRIu64 ".%02" PRIu64, d_g / SCALE_FACTOR, d_g % SCALE_FACTOR);
+
+    uint64_t d_b = absolute_difference(loc->b_dist, b_dist);
+    d_b *= d_b;
+    d_b *= (SCALE_FACTOR / 2);
+    d_b /= (loc->b_std * loc->b_std);
+    // ESP_LOGI(TAG_STA, "d_b: %" PRIu64 ".%02" PRIu64, d_b / SCALE_FACTOR, d_b % SCALE_FACTOR);
+
+    // Exponentiation approximation
+    uint64_t u = d_r + d_g + d_b;
+    // ESP_LOGI(TAG_STA, "u: %" PRIu64 ".%02" PRIu64, u / SCALE_FACTOR, u % SCALE_FACTOR);
+
+    uint64_t exp;
+    if (u > 3 * SCALE_FACTOR) {
+        exp = 0; // Large `u` means `e^(-u)` approaches 0
+    } else {
+        exp = SCALE_FACTOR + (u * u) / 2 - u;
+    }
+
+    // ESP_LOGI(TAG_STA, "exp: %" PRIu64 ".%02" PRIu64, exp / SCALE_FACTOR, exp % SCALE_FACTOR);
+
+    return C * exp / SCALE_FACTOR;
+}
+
+static uint32_t quantify_proximity(loc_info_t *loc, uint32_t r_dist, uint32_t g_dist, uint32_t b_dist) {
+    uint32_t prox = 0;
+    uint32_t temp = 0;
+
+    // Sum of squared differences, where the differences is the number of std away from the center on a given axis
+    // ESP_LOGI(TAG_STA, "%s", loc->name);
+    // ESP_LOGI(TAG_STA, "%"PRIu32, prox);
+    temp = (absolute_difference(r_dist * 100, loc->r_dist * 100) / loc->r_std);
+    prox += temp * temp;
+    // ESP_LOGI(TAG_STA, "%"PRIu32, prox);
+    temp = (absolute_difference(g_dist * 100, loc->g_dist * 100) / loc->g_std);
+    prox += temp * temp;
+    // ESP_LOGI(TAG_STA, "%"PRIu32, prox);
+    temp = (absolute_difference(b_dist * 100, loc->b_dist * 100) / loc->b_std);
+    prox += temp * temp;
+    // ESP_LOGI(TAG_STA, "%"PRIu32, prox);
+    return prox;
 }
 
 void app_main(void)
@@ -978,81 +1054,140 @@ void app_main(void)
 #elif CONFIG_ESP_FTM_LOC_STATION
     // Enable station mode
     ESP_LOGI(TAG_AP, "Station mode");
-    uint64_t g_dist = 0;
-    int32_t g_rssi = 0;
-    uint64_t r_dist = 0;
-    int32_t r_rssi = 0;
-    uint64_t b_dist = 0;
-    int32_t b_rssi = 0;
+    uint32_t g_dist = 0;
+    uint32_t r_dist = 0;
+    uint32_t b_dist = 0;
 
     loc_info_t laser_cutter = { // Laser Cutter is purple
         .name = "Laser Cutter",
         .r_duty = 4096,
         .g_duty = 8192,
-        .b_duty = 4096
+        .b_duty = 4096,
+        .r_dist = 2489,
+        .r_std = 469,
+        .g_dist = 1863,
+        .g_std = 409,
+        .b_dist = 680,
+        .b_std = 482
     };
 
     loc_info_t front_desk = { // Front Desk is green
         .name = "Front Desk",
         .r_duty = 8192,
         .g_duty = 0,
-        .b_duty = 8192
+        .b_duty = 8192,
+        .r_dist = 943,
+        .r_std = 315,
+        .g_dist = 1336,
+        .g_std = 247,
+        .b_dist = 2097,
+        .b_std = 312
     };
 
     loc_info_t printers = { // 3D Printers are blue
         .name = "3D Printers",
         .r_duty = 8192,
         .g_duty = 8192,
-        .b_duty = 0
+        .b_duty = 0,
+        .r_dist = 2511,
+        .r_std = 404,
+        .g_dist = 1583,
+        .g_std = 418,
+        .b_dist = 1218,
+        .b_std = 358
     };
 
     loc_info_t bl_table = { // Backleft table is red
         .name = "Back Left Table",
         .r_duty = 0,
         .g_duty = 8192,
-        .b_duty = 8192
+        .b_duty = 8192,
+        .r_dist = 2011,
+        .r_std = 463,
+        .g_dist = 1434,
+        .g_std = 380,
+        .b_dist = 1159,
+        .b_std = 305
     };
 
     loc_info_t br_table = { // Backright table is teal
         .name = "Back Right Table",
         .r_duty = 8192,
         .g_duty = 1024,
-        .b_duty = 6144
+        .b_duty = 6144,
+        .r_dist = 2023,
+        .r_std = 330,
+        .g_dist = 1123,
+        .g_std = 485,
+        .b_dist = 1367,
+        .b_std = 377
     };
 
     loc_info_t front_table = { // Front table is brown/orange
         .name = "Front Table",
         .r_duty = 1024,
         .g_duty = 6144,
-        .b_duty = 8192
+        .b_duty = 8192,
+        .r_dist = 1213,
+        .r_std = 475,
+        .g_dist = 1050,
+        .g_std = 434,
+        .b_dist = 1870,
+        .b_std = 333
     };
 
     loc_info_t toolboxes = { // Tool boxes are white
         .name = "Tool Boxes",
         .r_duty = 4096,
         .g_duty = 4096,
-        .b_duty = 4096
+        .b_duty = 4096,
+        .r_dist = 2216,
+        .r_std = 425,
+        .g_dist = 1374,
+        .g_std = 418,
+        .b_dist = 1500,
+        .b_std = 333
     };
 
-    for (int i = 0; i < 50; i++) {
-        set_leds_with_loc(laser_cutter); // white
+    loc_info_t locations[NUM_LOCATIONS] = {laser_cutter, bl_table, br_table,
+                            front_table, front_desk, toolboxes, printers}; // removed toolboxes, printers
+
+    for (int i = 0; i < 200; i++) {
         wifi_cmd_ftm_a("red");
-        r_dist = s_dist_est;
-        r_rssi = s_rssi_est;
+        r_dist = s_dist_est / 10000000000;
 
-        set_leds_with_loc(printers); //brown/orange
         wifi_cmd_ftm_a("green");
-        g_dist = s_dist_est;
-        b_rssi = s_rssi_est;
+        g_dist = s_dist_est / 10000000000;
 
-        set_leds_with_loc(front_desk); // teal
         wifi_cmd_ftm_a("blue"); 
-        b_dist = s_dist_est;
-        b_rssi = s_rssi_est;
+        b_dist = s_dist_est / 10000000000;
 
-        ESP_LOGI(TAG_STA, "Tuple:%" PRIu64 ".%04" PRIu64 ",%" PRId32 ",%"PRIu64 ".%04" PRIu64 ",%" PRId32 ",%"PRIu64 ".%04" PRIu64 ",%" PRId32,
-                         r_dist / 10000000000000, (r_dist % 10000000000000) / 1000000000, r_rssi, g_dist / 10000000000000,
-                         (g_dist % 10000000000000) / 1000000000, g_rssi, b_dist / 10000000000000, (b_dist % 10000000000000) / 1000000000, b_rssi);
+        ESP_LOGI(TAG_STA, "Tuple:%" PRIu32 ",%"PRIu32 ",%" PRIu32, r_dist, g_dist, b_dist);
+
+        loc_info_t *least = locations;
+        // uint32_t min_prox = UINT32_MAX;
+        // for (int i = 0; i < NUM_LOCATIONS; i++) {
+        //     uint32_t prox = quantify_proximity(&locations[i], r_dist, g_dist, b_dist);
+        //     if (prox < min_prox) {
+        //         min_prox = prox;
+        //         least = &locations[i];
+        //     }
+        // }
+
+        // ESP_LOGI(TAG_STA, "Location:%" PRIu32 ",%s", min_prox, least->name);
+        // set_leds_with_loc(least);
+        uint64_t max_ll = 0;
+        for (int i = 0; i < NUM_LOCATIONS; i++) {
+            uint64_t ll = approx_gaussian(&locations[i], r_dist, g_dist, b_dist);
+            // ESP_LOGI(TAG_STA, "Location:%" PRIu64 ",%s", ll, locations[i].name);
+            if (ll > max_ll) {
+                max_ll = ll;
+                least = &locations[i];
+            }
+        }
+
+        ESP_LOGI(TAG_STA, "Highest Likelihood:%" PRIu64 ",%s", max_ll, least->name);
+        set_leds_with_loc(least);
     }
 #else
     /* Register commands */
